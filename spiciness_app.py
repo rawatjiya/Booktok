@@ -10,7 +10,7 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.pipeline import make_pipeline
 from tpot.export_utils import set_param_recursive
 
-filepath = "spicy_df.csv"
+filepath = "/Users/Apple/Documents/GitHub/Booktok/spicy_df (1).csv"
 df = pd.read_csv(filepath)
 
 book_name_mapping = {
