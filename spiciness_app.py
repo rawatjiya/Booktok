@@ -179,7 +179,7 @@ for feature, score in important_features:
 
 
 # Streamlit app title
-st.title("Book Spiciness Ratings")
+st.title("SpiceGlass")
 
 # Display the DataFrame in the app
 #st.dataframe(average_spiciness_per_book)
