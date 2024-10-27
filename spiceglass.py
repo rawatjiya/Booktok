@@ -313,7 +313,7 @@ if book_title:
 
 #######################################
 
-### GRAPHS ### 
+### GRAPHS & LISTS ### 
 
 ### ACCURACY & CLASSIFICATION REPORT ### 
 
@@ -425,5 +425,20 @@ if book_title:
 #plt.title('Explicit Reviews per Book Title')
 #plt.xticks([])  # X-axis labels were removed because 
 #plt.show()
+
+##################################
+
+### SPICINESS RANKING FOR EACH BOOK ###
+
+# Print out the spiciness ranking for each book in a formatted way
+#for index, row in average_spiciness_per_book.iterrows():
+#    print(f"{row['book_title']} is: {row['emoji']} {row['description']}")
+
+##################################
+
+### TOP 10 FEATURES AND WEIGHTS ###
+#print("Top 10 important features and their weights:")
+#for feature, score in important_features:
+#    print(f"{feature}: {score:.4f}")
 
 ##################################
