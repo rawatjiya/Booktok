@@ -1,7 +1,5 @@
 """SpiceGlass"""
 
-### NB: GRAPHS AT THE BOTTOM ###
-
 # Import libraries 
 import numpy as np
 import pandas as pd
@@ -15,7 +13,8 @@ from sklearn.model_selection import train_test_split
 
 ### CREATING THE DATA FRAME ###
 
-df = pd.read_csv("spicy_df.csv")
+filepath = "spicy_df.csv"
+df = pd.read_csv(filepath)
 df = df.drop("rating", axis=1)
 
 # Book title library 
@@ -292,153 +291,31 @@ average_spiciness_per_book['emoji'], average_spiciness_per_book['description'] =
 
 ### STREAMLIT ### 
 
-st.image("SpiceGlass.png", use_column_width=True)
-# Streamlit app title
-#st.title("SpiceGlass")
+# Streamlit page set up        
+search_page = st.Page(
+    page = "pages/Search.py",
+    title = "Search",
+    icon = ":material/search:", 
+    default = True,
+)
 
-book_title = st.text_input("Enter book title:")
+visuals_page = st.Page(
+    page = "pages/Visuals.py",
+    title = "Visuals",
+    icon = ":material/bar_chart:",
+)
 
-if book_title:
-    # Searching for the book in the DataFrame
-    result = average_spiciness_per_book[
-        average_spiciness_per_book['book_title'].str.contains(book_title, case=False)
-    ]
+contact_page = st.Page(
+    page = "pages/Contact.py",
+    title = "Contact",
+    icon = ":material/email:",
+)
 
-    if not result.empty:
-        book_info = result.iloc[0]
-        st.write(f"{book_info['book_title']} is: {book_info['emoji']} {book_info['description']}")
-    else:
-        book_title = book_title.title()
-        st.write(f"Sorry, '{book_title}' hasn't yet been added to our database.")
+pg = st.navigation(pages=[search_page, visuals_page, contact_page])
+
+# Putting the logo in the corner
+st.logo("assets/spiceglass_logo_r.png")
+
+pg.run()
 
 #######################################
-
-### GRAPHS & LISTS ### 
-
-### ACCURACY & CLASSIFICATION REPORT ### 
-
-#from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-
-#report = classification_report(y_test, results, output_dict=True)
-#report_df = pd.DataFrame(report).transpose()
-
-#print(f"Performance of {best_model}")
-#accuracy_rf = accuracy_score(y_test, results)
-#print(f'Accuracy: {accuracy_rf:.2f}')
-#report_df
-
-###################################
-
-### CONFUSION MATRIX ###
-
-#%matplotlib inline
-#cm_rf = confusion_matrix(y_test, results)
-#plt.figure(figsize=(8, 6))
-#sns.heatmap(cm_rf, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Explicit', 'Explicit'], yticklabels=['Not Explicit', 'Explicit'])
-#plt.ylabel('Actual')
-#plt.xlabel('Predicted')
-#plt.title('Confusion Matrix for best_model')
-#plt.show()
-
-####################################
-
-### TOP 10 FEATURES ###
-
-#plt.figure(figsize=(10, 6))
-#plt.barh(range(len(important_features)), [importance for _, importance in important_features], align='center')
-#plt.yticks(range(len(important_features)), [feature for feature, _ in important_features])
-#plt.xlabel('Importance Score')
-#plt.title('Top 10 Important Features for Explicit Review Classification')
-#plt.show()
-
-###################################
-
-###### WORDCLOUDS #######
-
-#from wordcloud import WordCloud
-
-### EXPLICIT REVIEWS ###
-
-#explicit_reviews = df[df['label'] == 'Explicit']['reviews']
-
-# Combining all explicit reviews into a single string
-#explicit_text = ' '.join(explicit_reviews)
-
-#wordcloud = WordCloud(width=800, height=400, background_color='white', colormap="Reds").generate(explicit_text)
-
-#plt.figure(figsize=(10, 6))
-#plt.imshow(wordcloud, interpolation='bilinear')
-#plt.axis('off')  # Turn off the axis
-#plt.title('Word Cloud of Explicit Reviews', fontsize=16)  # Add a title
-#plt.show()
-
-####################################
-
-
-### INEXPLICIT REVIEWS ###
-
-#inexplicit_reviews = df[df['label'] == 'Not Explicit']['reviews']
-#explicit_text = ' '.join(inexplicit_reviews)
-
-#wordcloud = WordCloud(width=800, height=400, background_color='white').generate(inexplicit_text)
-#plt.figure(figsize=(10, 6))
-#plt.imshow(wordcloud, interpolation='bilinear')
-#plt.axis('off')  # Turn off the axis
-#plt.title('Word Cloud of Inexplicit Reviews', fontsize=16)  # Add a title
-#plt.show()
-
-###################################
-
-
-### EXPLICIT REVIEWS PER BOOK TITLE ###
-
-#import matplotlib.pyplot as plt
-#import seaborn as sns
-
-# Function to label reviews as 'Explicit' or 'Not Explicit' based on keywords
-#def label_reviews(reviews, keywords):
-#    labels = []
-#    for review in reviews:
-#        if any(keyword in review.lower() for keyword in keywords):
-#            labels.append("Explicit")
-#        else:
-#            labels.append("Not Explicit")
-#    return labels
-
-    
-#df['label'] = label_reviews(df['reviews'], explicit_words)
-
-# Filtering explicit reviews and count them by book title
-#explicit_counts = df[df['label'] == 'Explicit'].groupby('book_title').size()
-
-# Converting to DataFrame and resetting the index for plotting
-#explicit_counts = explicit_counts.reset_index(name='Explicit_Count')
-
-# Sorting by 'Explicit_Count' for top 10 books
-#top_explicit_counts = explicit_counts.sort_values(by='Explicit_Count', ascending=False).head(10)
-
-#plt.figure(figsize=(10, 6))
-#sns.barplot(x='book_title', y='Explicit_Count', data=explicit_counts, palette='viridis')
-
-#plt.xlabel('')
-#plt.ylabel('Number of Explicit Reviews')
-#plt.title('Explicit Reviews per Book Title')
-#plt.xticks([])  # X-axis labels were removed because 
-#plt.show()
-
-##################################
-
-### SPICINESS RANKING FOR EACH BOOK ###
-
-# Print out the spiciness ranking for each book in a formatted way
-#for index, row in average_spiciness_per_book.iterrows():
-#    print(f"{row['book_title']} is: {row['emoji']} {row['description']}")
-
-##################################
-
-### TOP 10 FEATURES AND WEIGHTS ###
-#print("Top 10 important features and their weights:")
-#for feature, score in important_features:
-#    print(f"{feature}: {score:.4f}")
-
-##################################
