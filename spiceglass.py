@@ -292,7 +292,7 @@ average_spiciness_per_book['emoji'], average_spiciness_per_book['description'] =
 
 ### STREAMLIT ### 
 
-st.image("logo.png", use_column_width=True)
+st.image("SpiceGlass.png", use_column_width=True)
 # Streamlit app title
 #st.title("SpiceGlass")
 
