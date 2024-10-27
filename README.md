@@ -1,6 +1,6 @@
-SPICEGLASS
+# SPICEGLASS
 
-For picking up your next read... 
+## For picking up your next read... 
 
 This app was developed as a part of a Introduction to Data Science course, 
 with real users in mind. Spiceglass is a tool aimed at readers interested in the 
@@ -11,7 +11,7 @@ system of chili-peppers. Seeing how users had created their own system for somet
 has been lacking on platforms, we decided to utilize and preserve the system that the community 
 had built and create a tool with readers in mind. 
 
-How it works: 
+## How it works: 
 
 The results are presented using streamlit. The user types in the title of the book and the app
 gives it a spiciness rating of one to five chilli peppers, along with a short
@@ -20,14 +20,14 @@ that have been added to the database. For all other book titles, the app
 prints out the message “Sorry, [book title] hasn’t yet been added to our 
 database.” 
 
-Data collection: 
+## Data collection: 
 
 We used RStudio’s Goodreader library to scrape 30 reviews of 100 books. 
 The data was saved as a CSV file and exported to Python. The dataframe includes 
 book id (book_id), the book title (book_title) and review text (reviews). 
 No data was collected from copyrighted material. 
 
-How to use: 
+## How to use: 
 
 1. Download the files to a directory 
 2. Activate the python environment
