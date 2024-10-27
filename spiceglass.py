@@ -15,8 +15,7 @@ from sklearn.model_selection import train_test_split
 
 ### CREATING THE DATA FRAME ###
 
-filepath = "c:/Users/sonja/Downloads/spicy_df.csv"
-df = pd.read_csv(filepath)
+df = pd.read_csv("spicy_df.csv")
 df = df.drop("rating", axis=1)
 
 # Book title library 
@@ -292,9 +291,8 @@ average_spiciness_per_book['emoji'], average_spiciness_per_book['description'] =
 ####################################
 
 ### STREAMLIT ### 
-image_path = "C:/Users/sonja/Downloads/SpiceGlass.png"
 
-st.image(image_path, use_column_width=True)
+st.image("logo.png", use_column_width=True)
 # Streamlit app title
 #st.title("SpiceGlass")
 
