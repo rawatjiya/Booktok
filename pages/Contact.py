@@ -11,4 +11,4 @@ with st.form("contact_form"):
     message = st.text_area("Message", placeholder="Type your message here")
     button = st.form_submit_button("Submit", use_container_width=True)
     
-# This doesn't currenty connec to anything
+# This doesn't currenty connect to anything
