@@ -4,11 +4,27 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import requests
 from model import important_features, X_train, X_test, y_train, y_test, results, best_model, df, explicit_words
+from nltk.stem import PorterStemmer
 
 st.title("Data visualisation")
 st.markdown("Below are graphs visualising our data in different ways.")
 st.markdown("\n\n")
+
+df['reviews'] = df['reviews'].str.replace(r'[^\w\s🌶️🫦🔥]+', '', regex=True)
+# Removing stopwords
+stopwords_list = requests.get(
+    "https://gist.githubusercontent.com/rg089/35e00abf8941d72d419224cfd5b5925d/raw/12d899b70156fd0041fa9778d657330b024b959c/stopwords.txt"
+).content
+stopwords = set(stopwords_list.decode().splitlines()) 
+
+# Additional stopwords
+additional_stopwords = {'book', 'books', 'dont', 'didnt', 'doesnt', 'read', 'write', 'ive', 'ill', 'isnt'}
+stopwords.update(additional_stopwords)
+
+# Cleaning reviews by filtering out stopwords
+df['reviews'] = df['reviews'].apply(lambda x: ' '.join([word for word in str(x).split() if word.lower() not in stopwords]))
 
 ### ACCURACY & CLASSIFICATION REPORT ### 
 
@@ -63,6 +79,59 @@ st.markdown("\n\n")
 
 ###################################
 
+
+### EXPLICIT REVIEWS PER BOOK TITLE ###
+
+st.subheader("Explicit Reviews per Book Title")
+
+# Function to label reviews as 'Explicit' or 'Not Explicit' based on keywords
+def label_reviews(reviews, keywords):
+    labels = []
+    for review in reviews:
+        if any(keyword in review.lower() for keyword in keywords):
+            labels.append("Explicit")
+        else:
+            labels.append("Not Explicit")
+    return labels
+
+    
+df['label'] = label_reviews(df['reviews'], explicit_words)
+
+# Filtering explicit reviews and count them by book title
+explicit_counts = df[df['label'] == 'Explicit'].groupby('book_title').size()
+
+# Converting to DataFrame and resetting the index for plotting
+explicit_counts = explicit_counts.reset_index(name='Explicit_Count')
+
+# Sorting by 'Explicit_Count' for top 10 books
+top_explicit_counts = explicit_counts.sort_values(by='Explicit_Count', ascending=False).head(10)
+
+# ALL BOOKS
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(x='book_title', y='Explicit_Count', data=explicit_counts, palette='Reds', ax=ax)
+
+ax.set_xlabel('')
+ax.set_ylabel('Number of Explicit Reviews')
+ax.set_title('Explicit Reviews per Book Title')
+ax.set_xticks([])  # X-axis labels were removed because too messy otherwise
+st.pyplot(fig)
+
+st.caption("Shows the number of explicit reviews associated with each book.")
+
+# TOP 10 BOOKS 
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(x='book_title', y='Explicit_Count', data=top_explicit_counts, palette='Reds_r', ax=ax)  # Use top_explicit_counts here
+
+ax.set_xlabel('')
+ax.set_ylabel('Number of Explicit Reviews')
+ax.set_title('Top 10 Books with Explicit Reviews')
+ax.set_xticklabels(top_explicit_counts['book_title'], rotation=45, ha='right')  # Rotate labels for better readability
+st.pyplot(fig)
+
+st.caption("Top 10 Spiciest Books")
+
+##################################
+
 ###### WORDCLOUDS #######
 
 st.subheader("WordClouds")
@@ -70,6 +139,9 @@ st.subheader("WordClouds")
 from wordcloud import WordCloud
 
 ### EXPLICIT REVIEWS ###
+
+ps = PorterStemmer() 
+df["reviews"] = df["reviews"].apply(lambda x: ' '.join([ps.stem(word) for word in str(x).split()]))
 
 explicit_reviews = df[df['label'] == 'Explicit']['reviews']
 
@@ -105,43 +177,3 @@ st.caption("Highlights commonly occuring words within inexplicit reviews. Freque
 st.markdown("\n\n")
 
 ###################################
-
-
-### EXPLICIT REVIEWS PER BOOK TITLE ###
-
-st.subheader("Explicit Reviews per Book Title")
-
-# Function to label reviews as 'Explicit' or 'Not Explicit' based on keywords
-def label_reviews(reviews, keywords):
-    labels = []
-    for review in reviews:
-        if any(keyword in review.lower() for keyword in keywords):
-            labels.append("Explicit")
-        else:
-            labels.append("Not Explicit")
-    return labels
-
-    
-df['label'] = label_reviews(df['reviews'], explicit_words)
-
-# Filtering explicit reviews and count them by book title
-explicit_counts = df[df['label'] == 'Explicit'].groupby('book_title').size()
-
-# Converting to DataFrame and resetting the index for plotting
-explicit_counts = explicit_counts.reset_index(name='Explicit_Count')
-
-# Sorting by 'Explicit_Count' for top 10 books
-top_explicit_counts = explicit_counts.sort_values(by='Explicit_Count', ascending=False).head(10)
-
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='book_title', y='Explicit_Count', data=explicit_counts, palette='Reds', ax=ax)
-
-ax.set_xlabel('')
-ax.set_ylabel('Number of Explicit Reviews')
-ax.set_title('Explicit Reviews per Book Title')
-ax.set_xticks([])  # X-axis labels were removed because 
-st.pyplot(fig)
-
-st.caption("Shows the number of explicit reviews associated with each book.")
-
-##################################
