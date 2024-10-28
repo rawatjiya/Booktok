@@ -1,2 +1,6 @@
 scikit-learn
 nltk
+matplotlib
+seaborn 
+wordcloud 
+requests
