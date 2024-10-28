@@ -1,5 +1,5 @@
 import streamlit as st
-from spiceglass import average_spiciness_per_book
+from model import average_spiciness_per_book
 
 image_path = "assets/spiceglass_logo_simple.png"
 
